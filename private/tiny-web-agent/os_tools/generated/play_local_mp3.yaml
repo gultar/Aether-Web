@@ -1,0 +1,18 @@
+name: play_local_mp3
+type: workflow
+description: Plays an MP3 file using Browser-OS's built-in audio player (if available).
+parameters:
+  type: object
+  properties:
+    file_path:
+      type: string
+      description: Local file path to MP3.
+steps:
+- tool: browser_window
+  arguments:
+    action: open
+    target: terminal-window-1788372300362
+- tool: browser_note
+  arguments:
+    text: 'Run: `powershell -Command "Start-Process -FilePath ''{{steps.0.result}}''
+      -ArgumentList ''/path:{{args.file_path}}'' -Wait"'

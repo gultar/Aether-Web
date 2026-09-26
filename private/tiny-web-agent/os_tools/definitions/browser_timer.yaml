@@ -1,0 +1,12 @@
+name: browser_timer
+type: primitive
+handler: browser_timer
+description: Start a timer.
+parameters:
+  type: object
+  properties:
+    duration:
+      type: string
+      description: e.g. 30s, 20m, 2h
+    label: {type: string}
+  required: [duration]

@@ -1,0 +1,14 @@
+name: browser_read_url
+type: primitive
+handler: browser_read_url
+description: Read a specific public webpage, documentation page, GitHub README, or URL and return compact readable text. Meaningful links inside the page body are preserved inline so you can follow a relevant source or deeper page with this tool. Use this instead of guessing what a linked page says.
+parameters:
+  type: object
+  properties:
+    url:
+      type: string
+      description: Public http/https URL to read.
+    max_chars:
+      type: integer
+      description: Maximum readable characters to return, 1000 to 12000. Defaults to 7000.
+  required: [url]

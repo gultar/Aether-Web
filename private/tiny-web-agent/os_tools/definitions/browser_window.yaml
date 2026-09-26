@@ -1,0 +1,16 @@
+name: browser_window
+type: primitive
+handler: browser_window
+description: Control Browser-OS windows.
+parameters:
+  type: object
+  properties:
+    action:
+      type: string
+      enum: [open, close, minimize, restore]
+
+    target:
+      type: string
+      enum: [terminal, system, processes, network, disks, services, news, weather, agenda, clipboard, notes, todo, bookmarks, search, launcher, timers, background, riftbreakers, chat, research]
+
+  required: [action, target]

@@ -1,0 +1,11 @@
+name: browser_project_read
+type: primitive
+handler: browser_project_read
+description: Read a bounded slice of a text/source file inside Browser-OS. For large files, search first and page with start_char instead of trying to read the whole file.
+parameters:
+  type: object
+  properties:
+    path: {type: string, description: Project-relative file path.}
+    max_chars: {type: integer, description: Maximum characters to return, 1000 to 12000.}
+    start_char: {type: integer, description: Character offset to start reading from; use the next start_char reported by a truncated read.}
+  required: [path]

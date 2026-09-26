@@ -1,0 +1,12 @@
+name: browser_project_replace
+type: primitive
+handler: browser_project_replace
+description: Make an exact text replacement in an existing Browser-OS source file. A backup is created automatically before editing.
+parameters:
+  type: object
+  properties:
+    path: {type: string, description: Project-relative file path.}
+    old: {type: string, description: Exact existing text to replace.}
+    new: {type: string, description: Replacement text.}
+    replace_all: {type: boolean, description: Replace every exact occurrence; defaults false.}
+  required: [path, old, new]

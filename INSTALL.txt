@@ -1,0 +1,19 @@
+BrowserOS explicit GPU-layer patch
+==================================
+
+1. Close BrowserOS.
+2. Back up your current BrowserOS folder.
+3. Extract this ZIP into the BrowserOS root (the folder containing private/).
+4. Allow Windows to replace private/tiny-web-agent/web_agent.py.
+5. Start BrowserOS normally.
+
+Behavior after patch:
+- gpu_layers = -1 / Auto: VRAM planner selects a conservative layer count.
+- gpu_layers = 0: CPU-only.
+- gpu_layers = N (N >= 1): N is passed to llama.cpp exactly, clamped only if N exceeds the model's actual transformer block count.
+- The VRAM planner may warn that an explicit value exceeds its estimate, but it will not lower it.
+
+Expected log for an explicit 17-layer DeepSeek request:
+[VRAM] GGUF preflight ... requested 17, honoring 17 GPU layers | planner advisory ...
+
+If 17 genuinely exceeds available VRAM, llama.cpp/CUDA may fail to load. Lower the explicit value manually in that case.

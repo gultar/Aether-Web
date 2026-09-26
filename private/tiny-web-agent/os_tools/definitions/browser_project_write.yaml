@@ -1,0 +1,11 @@
+name: browser_project_write
+type: primitive
+handler: browser_project_write
+description: Create a new Browser-OS text/source file, or explicitly overwrite one after reading it. Existing files are backed up before overwrite.
+parameters:
+  type: object
+  properties:
+    path: {type: string, description: Project-relative file path.}
+    content: {type: string, description: Complete file content.}
+    overwrite: {type: boolean, description: Must be true to replace an existing file.}
+  required: [path, content]

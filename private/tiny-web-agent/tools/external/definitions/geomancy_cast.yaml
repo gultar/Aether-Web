@@ -1,0 +1,21 @@
+name: geomancy_cast
+file: geomancy_cast.py
+function: geomancy_cast
+label: Geomancy Cast
+description: >-
+  Generate a complete classical geomantic shield and twelve-house chart from a
+  user's question plus a fresh random nonce. Use this tool when the user asks
+  Tiny Web Agent itself to cast a geomantic chart or perform a geomantic reading.
+enabled_by_default: false
+timeout_seconds: 10
+parameters:
+  type: object
+  properties:
+    query:
+      type: string
+      description: The querent's exact question or seed phrase.
+    nonce:
+      type: string
+      description: Optional reproducibility nonce. Omit for a fresh random cast.
+  required:
+    - query

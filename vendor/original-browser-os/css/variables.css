@@ -1,0 +1,5 @@
+/* Fallback only. `npm install` replaces this file with the exact original Browser-OS variables.css. */
+:root {
+  --console-window-background: rgba(20,23,27,.96);
+  --winbox-background: #404347;
+}

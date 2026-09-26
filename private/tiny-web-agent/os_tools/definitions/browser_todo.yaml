@@ -1,0 +1,9 @@
+name: browser_todo
+type: primitive
+handler: browser_todo
+description: Add a todo item.
+parameters:
+  type: object
+  properties:
+    text: {type: string}
+  required: [text]

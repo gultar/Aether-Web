@@ -1,0 +1,9 @@
+name: browser_project_list
+type: primitive
+handler: browser_project_list
+description: List files or folders inside the Browser-OS project when implementing an explicitly requested project change.
+parameters:
+  type: object
+  properties:
+    path: {type: string, description: Project-relative directory, e.g. js/dashboard}
+    pattern: {type: string, description: Glob pattern such as '*.js' or '*'}

@@ -1,0 +1,126 @@
+/* Browser-OS crystal/glass layer.
+   Loaded AFTER the original Browser-OS window.css.
+   Geometry/window-manager behavior is intentionally untouched. */
+:root{
+  --crystal-header: rgba(13, 19, 27, .38);
+  --crystal-body: rgba(8, 13, 20, .25);
+  --crystal-terminal-body: rgba(2, 6, 10, .17);
+  --crystal-control: rgba(19, 28, 39, .42);
+  --crystal-border: rgba(255,255,255,.18);
+  --crystal-blur: 7px;
+  --crystal-saturation: 140%;
+  --crystal-radius: 0px;
+  --crystal-shadow-alpha: .30;
+}
+
+/* Avoid stacking several dark translucent layers.  The shell itself is
+   transparent; the body/header are the actual glass surfaces. */
+.winbox{
+  background: transparent !important;
+  background-color: transparent !important;
+  border: 1px solid var(--crystal-border);
+  border-radius: var(--crystal-radius);
+  box-shadow: 0 18px 48px rgba(0,0,0,var(--crystal-shadow-alpha)), inset 0 1px 0 rgba(255,255,255,.08);
+}
+
+.winbox .wb-header{
+  background: var(--crystal-header) !important;
+  background-color: var(--crystal-header) !important;
+  border-bottom: 1px solid rgba(255,255,255,.09);
+  border-radius: var(--crystal-radius) var(--crystal-radius) 0 0;
+  -webkit-backdrop-filter: blur(var(--crystal-blur)) saturate(var(--crystal-saturation));
+  backdrop-filter: blur(var(--crystal-blur)) saturate(var(--crystal-saturation));
+}
+
+.winbox .wb-body{
+  background: var(--crystal-body) !important;
+  background-color: var(--crystal-body) !important;
+  -webkit-backdrop-filter: blur(var(--crystal-blur)) saturate(var(--crystal-saturation));
+  backdrop-filter: blur(var(--crystal-blur)) saturate(var(--crystal-saturation));
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.035);
+  border-radius: 0 0 var(--crystal-radius) var(--crystal-radius);
+}
+
+/* App content must not repaint an opaque rectangle over the glass body. */
+.winbox .widget,
+.winbox .tool,
+.winbox .terminal-window,
+.winbox .terminal-window .container,
+.winbox .terminal-window .output,
+.winbox .terminal-window .input-line,
+.winbox .terminal-window .line{
+  background: transparent !important;
+  background-color: transparent !important;
+}
+
+/* Terminal gets a slightly darker glass pane for contrast, but is deliberately
+   much more transparent than before. :has() is supported by current Chrome. */
+.winbox:has(.terminal-window) .wb-body{
+  background: var(--crystal-terminal-body) !important;
+  background-color: var(--crystal-terminal-body) !important;
+}
+
+.winbox .terminal-window{
+  background: rgba(2,6,10,.06) !important;
+  background-color: rgba(2,6,10,.06) !important;
+}
+
+/* Keep cards/controls readable without turning them opaque. */
+.winbox .stat-card,
+.winbox .forecast > div,
+.winbox .background-preview{
+  background-color: rgba(255,255,255,.035) !important;
+}
+
+.winbox .tool button,
+.winbox .tool select,
+.winbox .tool input,
+.winbox .tool textarea,
+.winbox .feed-select,
+.winbox .refresh-news,
+.winbox .notes-tool textarea{
+  background: var(--crystal-control) !important;
+  background-color: var(--crystal-control) !important;
+  -webkit-backdrop-filter: blur(4px) saturate(115%);
+  backdrop-filter: blur(4px) saturate(115%);
+}
+
+.winbox .news-item,
+.winbox .clip-row,
+.winbox .launcher-list > button,
+.winbox .bookmark-row > button:first-child,
+.winbox .process-row,
+.winbox .disk-row,
+.winbox .service-row,
+.winbox .calendar-row{
+  background-color: transparent !important;
+}
+
+.winbox .news-item:hover,
+.winbox .launcher-list > button:hover,
+.winbox .bookmark-row > button:first-child:hover{
+  background-color: rgba(255,255,255,.045) !important;
+}
+
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))){
+  .winbox .wb-header{ background: rgba(13,19,27,.50) !important; }
+  .winbox .wb-body{ background: rgba(8,13,20,.36) !important; }
+  .winbox:has(.terminal-window) .wb-body{ background: rgba(2,6,10,.28) !important; }
+}
+
+
+/* Persistent low-compositor mode. Transparency stays; expensive backdrop blur is removed. */
+body.performance-mode .winbox .wb-header,
+body.performance-mode .winbox .wb-body,
+body.performance-mode .winbox .tool button,
+body.performance-mode .winbox .tool select,
+body.performance-mode .winbox .tool input,
+body.performance-mode .winbox .tool textarea,
+body.performance-mode .winbox .feed-select,
+body.performance-mode .winbox .refresh-news,
+body.performance-mode .winbox .notes-tool textarea,
+body.performance-mode .eco-toolbar,
+body.performance-mode .calendar-editor-overlay{
+  -webkit-backdrop-filter: none !important;
+  backdrop-filter: none !important;
+}

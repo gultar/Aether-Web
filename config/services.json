@@ -1,0 +1,25 @@
+[
+  {
+    "id": "browser-os",
+    "name": "Browser-OS",
+    "host": "127.0.0.1",
+    "port": 8001
+  },
+  {
+    "id": "ollama",
+    "name": "Ollama",
+    "host": "127.0.0.1",
+    "port": 11434
+  },
+  {
+    "id": "ministral",
+    "name": "Ministral / Local LLM",
+    "host": "127.0.0.1",
+    "port": 7860
+  },
+  {
+    "name": "Tiny Web Agent",
+    "host": "127.0.0.1",
+    "port": 7860
+  }
+]

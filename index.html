@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Browser-OS</title>
+  <!-- Original Browser-OS theme variables. Synced from gultar/browser-os during npm install. -->
+  <link rel="stylesheet" href="./vendor/original-browser-os/css/variables.css">
+  <link rel="stylesheet" href="./css/dashboard.css?v=background-preview-side-tall-v3">
+  <!-- Exact original Browser-OS window.css. -->
+  <link rel="stylesheet" href="./css/window.css">
+  <link rel="stylesheet" href="./css/crystal.css?v=dual-context-v9.10.28-calendar-date-target">
+</head>
+<body>
+<div id="page-wrapper">
+  <nav id="topnav">
+    <ul class="menu-root">
+      <li class="menu-item">
+        <button id="main-menu-button" type="button">Menu</button>
+        <ul id="main-menu" class="submenu main-menu">
+          <li class="menu-group">
+            <button class="menu-folder" type="button"><span>Apps</span></button>
+            <ul class="submenu nested-submenu">
+              <li><button data-action="terminal" type="button">Terminal</button></li>
+              <li><button data-action="launcher" type="button">Launch app</button></li>
+              <li><button data-action="riftbreakers" type="button">Riftbreakers VTT</button></li>
+              <li><button data-action="geomancy" type="button">Geomancy</button></li>
+              <li class="separator"></li>
+              <li><button data-action="ecosystem" type="button">Ecosystem</button></li>
+              <li><button data-action="tamagotchi" type="button">Tamagotchi</button></li>
+            </ul>
+          </li>
+          <li class="menu-group">
+            <button class="menu-folder" type="button"><span>System</span></button>
+            <ul class="submenu nested-submenu">
+              <li><button data-action="system" type="button">System Monitor</button></li>
+              <li><button data-action="processes" type="button">Processes</button></li>
+              <li><button data-action="network" type="button">Network</button></li>
+              <li><button data-action="disks" type="button">Disks</button></li>
+              <li><button data-action="services" type="button">Services</button></li>
+              <li class="separator"></li>
+              <li><button data-action="right-dock" type="button">Right dock</button></li>
+            </ul>
+          </li>
+          <li class="menu-group">
+            <button class="menu-folder" type="button"><span>Web &amp; information</span></button>
+            <ul class="submenu nested-submenu">
+              <li><button data-action="news" type="button">News</button></li>
+              <li><button data-action="weather" type="button">Weather</button></li>
+              <li><button data-action="calendar" type="button">Agenda</button></li>
+              <li><button data-action="search" type="button">Search</button></li>
+              <li><button data-action="bookmarks" type="button">Bookmarks</button></li>
+            </ul>
+          </li>
+          <li class="menu-group">
+            <button class="menu-folder" type="button"><span>Productivity</span></button>
+            <ul class="submenu nested-submenu">
+              <li><button data-action="clipboard" type="button">Clipboard</button></li>
+              <li><button data-action="notes" type="button">Notes</button></li>
+              <li><button data-action="todo" type="button">Todo</button></li>
+              <li><button data-action="timers" type="button">Timers &amp; Reminders</button></li>
+              <li><button data-action="cron" type="button">Scheduled Tasks</button></li>
+            </ul>
+          </li>
+          <li class="menu-group">
+            <button class="menu-folder" type="button"><span>AI &amp; research</span></button>
+            <ul class="submenu nested-submenu">
+              <li><button data-action="ai" type="button">Tiny Web Agent</button></li>
+              <li><button data-action="skills" type="button">Skills Editor</button></li>
+              <li><button data-action="tooleditor" type="button">Tool Editor</button></li>
+              
+              <li><button data-action="research" type="button">Research</button></li>
+            </ul>
+          </li>
+          <li class="menu-group">
+            <button class="menu-folder" type="button"><span>Personalize</span></button>
+            <ul class="submenu nested-submenu">
+              <li><button data-action="background" type="button">Background</button></li>
+              <li><button data-action="appearance" type="button">Window appearance</button></li>
+              <li><button data-action="voice-settings" type="button">Voice input settings</button></li>
+              <li><button data-action="performance" type="button">Performance mode: OFF</button></li>
+              <li class="separator"></li>
+              <li><button data-action="desktop-icons" type="button">Add desktop icon…</button></li>
+              <li><button data-action="add-shortcut" type="button">Add website shortcut</button></li>
+            </ul>
+          </li>
+          <li class="menu-group">
+            <button class="menu-folder" type="button"><span>Windows</span></button>
+            <ul class="submenu nested-submenu">
+              <li><button data-action="minimize" type="button">Minimize all</button></li>
+              <li><button data-action="restore" type="button">Restore all</button></li>
+            </ul>
+          </li>
+        </ul>
+      </li>
+    </ul>
+    <div class="topnav-right">
+      <div class="top-status">
+        <span id="top-cpu">CPU --%</span>
+        <span id="top-ram">RAM --%</span>
+        <span id="clock"></span>
+      </div>
+      <button id="voice-dictation-button" type="button" title="Voice dictation (Ctrl+Alt+V)" aria-label="Voice dictation" aria-pressed="false"><span aria-hidden="true">●</span></button>
+      <button id="top-dock-button" type="button" title="Toggle Right Dock" aria-label="Toggle Right Dock" aria-pressed="false"><span aria-hidden="true">▥</span></button>
+    </div>
+  </nav>
+
+  <div id="page-anchor" tabindex="-1"></div>
+  <main id="main-container">
+    <div id="desktop-icons"></div>
+    <div id="desktop-logo" aria-hidden="true">
+      <div class="logo-orbit"></div>
+      <span>BROWSER-OS</span>
+    </div>
+    <div id="window-mounts"></div>
+    <aside id="right-dock" aria-label="Right dock">
+      <div class="right-dock-width-handle" title="Drag to resize dock"></div>
+      <div class="right-dock-head"><strong>Workspace</strong><div class="right-dock-head-actions"><button type="button" onclick="BrowserOSDock.dock('terminal')" title="Add Terminal">T</button><button type="button" onclick="BrowserOSDock.dock('system')" title="Add System Monitor">S</button><button type="button" onclick="BrowserOSDock.dock('ecosystem')" title="Add Ecosystem">E</button><button type="button" onclick="BrowserOSDock.dock('tamagotchi')" title="Add Tamagotchi">♥</button><button type="button" onclick="BrowserOSDock.hide()" title="Hide dock">×</button></div></div>
+      <div class="right-dock-panels"></div>
+    </aside>
+  </main>
+</div>
+
+<template id="system-template">
+  <section class="widget system-widget">
+    <header class="widget-head"><strong>System resources</strong><span>LIVE</span></header>
+    <div class="stat-grid">
+      <article class="stat-card"><span>CPU</span><strong data-stat="cpu">--%</strong><div class="meter"><i data-bar="cpu"></i></div><small data-extra="cpu"></small></article>
+      <article class="stat-card"><span>RAM</span><strong data-stat="ram">--%</strong><div class="meter"><i data-bar="ram"></i></div><small data-extra="ram"></small></article>
+      <article class="stat-card"><span>GPU</span><strong data-stat="gpu">--%</strong><div class="meter"><i data-bar="gpu"></i></div><small data-extra="gpu"></small></article>
+      <article class="stat-card"><span>VRAM</span><strong data-stat="vram">--%</strong><div class="meter"><i data-bar="vram"></i></div><small data-extra="vram"></small></article>
+      <article class="stat-card wide"><span>Disk</span><strong data-stat="disk">--%</strong><div class="meter"><i data-bar="disk"></i></div><small data-extra="disk"></small></article>
+      <article class="stat-card wide"><span>CPU cores</span><div class="core-grid" data-cores></div></article>
+      <article class="stat-card"><span>Battery</span><strong data-stat="battery">--</strong><small data-extra="battery"></small></article>
+      <article class="stat-card"><span>Uptime</span><strong data-stat="uptime">--</strong><small data-extra="uptime"></small></article>
+    </div>
+  </section>
+</template>
+
+<template id="news-template">
+  <section class="widget news-widget">
+    <header class="widget-head">
+      <select class="feed-select"></select>
+      <button class="refresh-news" type="button" title="Refresh">↻</button>
+    </header>
+    <div class="news-list"></div>
+  </section>
+</template>
+
+
+<template id="notes-template"><section class="tool notes-tool"><header class="tool-head"><span>Scratchpad</span><small class="save-state">saved</small></header><textarea spellcheck="true" placeholder="Quick notes…"></textarea></section></template>
+<template id="todo-template">
+  <section class="tool todo-tool">
+    <header class="tool-head todo-head">
+      <span>Todo</span>
+      <div class="todo-head-actions">
+        <small class="todo-count">0 tasks</small>
+        <button class="todo-clear-completed" type="button">Clear completed</button>
+      </div>
+    </header>
+    <div class="todo-composer">
+      <input class="todo-input" type="text" autocomplete="off" spellcheck="true" placeholder="What needs to be done?">
+      <button class="todo-add" type="button">Add task</button>
+    </div>
+    <div class="todo-list" role="list"></div>
+  </section>
+</template>
+<template id="clipboard-template"><section class="tool"><header class="tool-head"><span>Clipboard history</span><div><button class="clipboard-capture">Capture current</button><button class="clipboard-clear">Clear</button></div></header><div class="clipboard-list"></div></section></template>
+<template id="bookmarks-template"><section class="tool"><header class="tool-head"><span>Bookmarks</span><div><button class="bookmark-source-local active">Browser-OS</button><button class="bookmark-source-chrome">Chrome</button><button class="bookmark-refresh" title="Refresh Chrome bookmarks">↻</button><button class="bookmark-add">Add</button></div></header><div class="bookmark-status"></div><div class="bookmark-list"></div></section></template>
+<template id="search-template"><section class="tool search-tool"><header class="tool-head"><span>Search launcher</span></header><div class="inline-form"><select><option value="google">Google</option><option value="github">GitHub</option><option value="wikipedia">Wikipedia</option><option value="youtube">YouTube</option><option value="reddit">Reddit</option></select><input placeholder="Search…"><button class="search-go">Go</button></div></section></template>
+<template id="launcher-template"><section class="tool launcher-tool"><header class="tool-head"><span>Windows applications</span><div class="launcher-head-actions"><small class="launcher-status">Loading…</small><button class="launcher-refresh" title="Refresh Windows apps">↻</button></div></header><div class="launcher-search-wrap"><input class="launcher-search" type="search" autocomplete="off" spellcheck="false" placeholder="Search installed apps…"><kbd>Enter</kbd></div><div class="launcher-list"></div></section></template>
+<template id="network-template"><section class="tool"><header class="tool-head"><span>Network</span><small>LIVE</small></header><div class="network-data"></div></section></template>
+<template id="disks-template"><section class="tool"><header class="tool-head"><span>Disk space</span></header><div class="disk-list"></div></section></template>
+<template id="processes-template"><section class="tool"><header class="tool-head"><span>Top processes</span><div class="process-sort"><button data-sort="cpu" class="active">CPU</button><button data-sort="ram">RAM</button></div></header><div class="process-list"></div></section></template>
+<template id="services-template"><section class="tool"><header class="tool-head"><span>Local services</span><small>config/services.json</small></header><div class="service-list"></div></section></template>
+<template id="weather-template"><section class="tool"><header class="tool-head"><span>Weather</span></header><div class="inline-form"><input placeholder="City"><button class="weather-go">Load</button></div><div class="weather-out"></div></section></template>
+<template id="timer-template"><section class="tool alarm-tool"><header class="tool-head"><span>Timers &amp; Reminders</span><small>Audible alerts</small></header><div class="alarm-create"><div class="alarm-form"><strong>Countdown timer</strong><div class="inline-form"><input class="timer-label" placeholder="Label (optional)"><input class="timer-duration" placeholder="25m" title="Examples: 30s, 25m, 2h, 1d"><button class="timer-add">Start timer</button></div></div><div class="alarm-form"><strong>Future reminder</strong><div class="inline-form"><input class="reminder-label" placeholder="Remind me to…"><input class="reminder-at" type="datetime-local"><button class="reminder-add">Add reminder</button></div></div></div><div class="alarm-note">Alerts continue while Browser-OS is open, even when this window is closed. Browser audio must be allowed for the audible alarm.</div><div class="timer-list"></div></section></template>
+<template id="calendar-template">
+  <section class="tool calendar-tool">
+    <header class="calendar-toolbar">
+      <div class="calendar-title-group"><strong class="calendar-period">Calendar</strong><span class="calendar-status">Outlook Web</span></div>
+      <div class="calendar-nav"><button class="calendar-prev" title="Previous">‹</button><button class="calendar-today">Today</button><button class="calendar-next" title="Next">›</button></div>
+      <div class="calendar-views" role="tablist"><button data-view="agenda" class="active">Agenda</button><button data-view="week">Week</button><button data-view="month">Month</button><button data-view="year">Year</button></div>
+      <div class="calendar-actions"><button class="calendar-new">+ New event</button><button class="calendar-refresh" title="Refresh published Outlook calendar">Refresh</button></div>
+    </header>
+    <div class="calendar-content"></div>
+  </section>
+</template>
+<template id="research-template"><section class="tool research-tool"><header class="tool-head"><span>Research</span><small>3–5 compact web sources</small></header><div class="research-controls"><textarea class="research-query" rows="2" placeholder="Ask a research question…"></textarea><select class="research-count" title="Sources"><option value="3">3 sources</option><option value="4" selected>4 sources</option><option value="5">5 sources</option></select><button class="research-go">Research</button></div><div class="research-status muted">Ready.</div><div class="research-layout"><div class="research-answer"></div><aside class="research-sources"></aside></div></section></template>
+<template id="background-template">
+  <section class="tool background-tool">
+    <header class="tool-head"><span>Desktop background</span><small class="background-status">Saved locally</small></header>
+    <div class="background-layout">
+      <div class="background-controls">
+        <label><span>Type</span><select class="background-mode"><option value="gradient">Preset gradient</option><option value="custom-gradient">Custom gradient</option><option value="flat">Flat colour</option><option value="local">Local image</option><option value="url">Image URL</option></select></label>
+        <div data-bg-panel="gradient"><label><span>Gradient</span><select class="bg-preset"><option value="midnight">Midnight</option><option value="slate">Slate</option><option value="dusk">Dusk</option><option value="forest">Forest</option></select></label></div>
+        <div data-bg-panel="custom-gradient" hidden><div class="bg-colors"><label><span>Colour 1</span><input class="bg-color1" type="color"></label><label><span>Colour 2</span><input class="bg-color2" type="color"></label></div><label><span>Angle</span><input class="bg-angle" type="range" min="0" max="360" step="1"></label></div>
+        <div data-bg-panel="flat" hidden><label><span>Colour</span><input class="bg-flat" type="color"></label></div>
+        <div data-bg-panel="local" hidden>
+          <label><span>Images</span><input class="bg-file" type="file" accept="image/*" multiple></label>
+          <label><span>Cycle every</span><div class="bg-number-field"><input class="bg-cycle-seconds" type="number" min="5" max="86400" step="1" value="60"><span>sec</span></div></label>
+          <label><span>Fade</span><div class="bg-number-field"><input class="bg-fade-seconds" type="number" min="0.1" max="10" step="0.1" value="2.5"><span>sec</span></div></label>
+          <small class="bg-local-count bg-hint">No local images saved</small>
+          <div class="bg-local-list" aria-label="Selected background images"></div>
+          <small class="bg-hint">Select one image for a static wallpaper, or several to cycle through them in order. Use Remove beside any saved image to take it out of the rotation. Images are copied into Browser-OS local browser storage and remain available after restart.</small>
+        </div>
+        <div data-bg-panel="url" hidden><label><span>Image URL</span><input class="bg-url" type="url" placeholder="https://example.com/wallpaper.jpg"></label></div>
+        <div class="background-actions"><button class="background-apply">Apply & save</button><button class="background-reset">Default</button></div>
+      </div>
+      <div class="background-preview" aria-label="Background preview"></div>
+    </div>
+  </section>
+</template>
+
+<!-- Local dependencies. No CDN is required for the window manager. -->
+<script src="./node_modules/jquery/dist/jquery.min.js"></script>
+<!-- Use the exact WinBox bundle shipped by the original Browser-OS. npm WinBox is fallback only. -->
+<script src="./vendor/original-browser-os/js/external/winbox.bundle.min.js" onerror="this.onerror=null;this.src='./node_modules/winbox/dist/winbox.bundle.min.js'"></script>
+<script src="./js/storage/storage.js"></script>
+<script src="./js/dashboard/responsive.js?v=dual-context-v9.10.28-calendar-date-target"></script>
+<script src="./js/window-manager/create-window.js?v=dual-context-v9.10.28-calendar-date-target"></script>
+<script src="./js/dashboard/system.js"></script>
+<script src="./js/dashboard/ecosystem.js?v=dual-context-v9.10.28-calendar-date-target"></script>
+<script src="./js/dashboard/tamagotchi.js?v=dual-context-v9.10.28-calendar-date-target"></script>
+<script src="./js/dashboard/dock.js?v=dual-context-v9.10.28-calendar-date-target"></script>
+<script src="./js/dashboard/news.js"></script>
+<script src="./js/dashboard/shortcuts.js?v=tool-editor-v1"></script>
+<script src="./js/dashboard/background.js?v=background-preview-side-tall-v3"></script>
+<script src="./js/dashboard/appearance.js?v=dual-context-v9.10.28-calendar-date-target"></script>
+<script src="./js/dashboard/tools.js?v=todo-layout-focus-v1"></script>
+<script src="./js/dashboard/riftbreakers.js"></script>
+<script src="./js/dashboard/tiny-agent.js?v=scheduled-result-conversation-v1"></script>
+<script src="./js/dashboard/geomancy.js?v=geomancy-v1"></script>
+<script src="./js/dashboard/skills.js?v=skills-editor-v1"></script>
+<script src="./js/dashboard/skill-editor.js?v=skills-editor-delete-v2"></script>
+<script src="./js/dashboard/tool-editor.js?v=tool-editor-v1"></script>
+<script src="./js/dashboard/cron.js?v=scheduled-history-clear-v1"></script>
+<script src="./js/dashboard/os-agent.js?v=skills-v1.2"></script>
+<script src="./js/dashboard/os-agent-window.js?v=skills-v1.2"></script>
+<script src="./js/dashboard/research.js?v=dual-context-v9.10.28-calendar-date-target"></script>
+<script src="./js/dashboard/voice.js?v=voice-command-v3"></script>
+<script src="./js/terminal/terminal.js?v=tool-editor-v1"></script>
+<script src="./js/terminal/terminal-window-init.js?v=dual-context-v9.10.28-calendar-date-target"></script>
+<script src="./js/dashboard/context-menu.js?v=tool-editor-v1"></script>
+<script src="./js/dashboard/init.js?v=tool-editor-v1"></script>
+</body>
+</html>

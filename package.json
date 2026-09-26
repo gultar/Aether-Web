@@ -1,0 +1,21 @@
+{
+  "name": "browser-os-local-dashboard",
+  "version": "2.2.0",
+  "private": true,
+  "description": "Browser-OS local desktop dashboard",
+  "scripts": {
+    "start": "node server.js",
+    "postinstall": "node scripts/fetch-original-browser-os-assets.js",
+    "sync-original-style": "node scripts/fetch-original-browser-os-assets.js"
+  },
+  "dependencies": {
+    "express": "^4.21.2",
+    "rss-parser": "^3.13.0",
+    "systeminformation": "^5.27.11",
+    "winbox": "0.2.82",
+    "jquery": "3.7.1"
+  },
+  "engines": {
+    "node": ">=22"
+  }
+}

@@ -1,0 +1,11 @@
+name: browser_research
+type: primitive
+handler: browser_research
+description: Research current/public web information.
+parameters:
+  type: object
+  properties:
+    query:
+      type: string
+      description: research query
+  required: [query]

@@ -1,0 +1,26 @@
+name: send_outlook_email
+file: outlook_email.py
+function: send_outlook_email
+label: Send Outlook Email
+description: >-
+  Send an email through the user's Outlook.com account. Use this tool only when
+  the user explicitly asks to send an email. Recipient, subject, and body must
+  be supplied from the user's request or resolved context.
+enabled_by_default: false
+timeout_seconds: 90
+parameters:
+  type: object
+  properties:
+    recipient:
+      type: string
+      description: Recipient email address.
+    subject:
+      type: string
+      description: Email subject line.
+    body:
+      type: string
+      description: Plain-text email body. Multiline text is supported.
+  required:
+    - recipient
+    - subject
+    - body

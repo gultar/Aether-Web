@@ -1,0 +1,23 @@
+name: create_tool
+type: primitive
+handler: create_tool
+description: Create or update a reusable YAML workflow.
+parameters:
+  type: object
+  properties:
+    definition:
+      type: string
+      description: |
+        YAML mapping containing name, type: workflow, description, optional parameters, and steps.
+        Each step calls an existing Browser-OS tool. Templates may use {{args.name}} and {{steps.0.result}}.
+        Example:
+          name: morning_setup
+          type: workflow
+          description: Open weather and agenda.
+          parameters: {}
+          steps:
+            - tool: browser_window
+              arguments: {action: open, target: weather}
+            - tool: browser_window
+              arguments: {action: open, target: agenda}
+  required: [definition]

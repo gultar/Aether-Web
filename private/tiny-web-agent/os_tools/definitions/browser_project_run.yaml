@@ -1,0 +1,17 @@
+name: browser_project_run
+type: primitive
+handler: browser_project_run
+description: Run one allow-listed Browser-OS project command and return its real exit code, stdout, and stderr. Supports Python/pytest, Node, and existing npm test/run scripts without exposing a raw shell.
+parameters:
+  type: object
+  properties:
+    command:
+      type: string
+      description: Single command such as "python tests/test_app.py", "pytest -q", "node --test", "npm test", or "npm run build". Shell operators are forbidden.
+    cwd:
+      type: string
+      description: Browser-OS project-relative working directory. Defaults to project root.
+    timeout_seconds:
+      type: integer
+      description: Runtime limit from 1 to 60 seconds. Defaults to 30.
+  required: [command]

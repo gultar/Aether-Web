@@ -1,0 +1,13 @@
+name: browser_note
+type: primitive
+handler: browser_note
+description: Write to the scratchpad.
+parameters:
+  type: object
+  properties:
+    text: {type: string}
+    mode:
+      type: string
+      enum: [append, replace]
+      description: append or replace
+  required: [text]

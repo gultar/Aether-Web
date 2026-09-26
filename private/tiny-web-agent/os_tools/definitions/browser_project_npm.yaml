@@ -1,0 +1,12 @@
+name: browser_project_npm
+type: primitive
+handler: browser_project_npm
+description: Install or uninstall one npm package in the Browser-OS project when the user explicitly asks to integrate a package/library.
+parameters:
+  type: object
+  properties:
+    package: {type: string, description: npm package name, optionally with version.}
+    action:
+      type: string
+      enum: [install, uninstall]
+  required: [package]

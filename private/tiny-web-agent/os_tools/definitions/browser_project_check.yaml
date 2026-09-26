@@ -1,0 +1,9 @@
+name: browser_project_check
+type: primitive
+handler: browser_project_check
+description: Syntax-check a Browser-OS JavaScript, Python, or JSON file after editing it.
+parameters:
+  type: object
+  properties:
+    path: {type: string, description: Project-relative source file path.}
+  required: [path]

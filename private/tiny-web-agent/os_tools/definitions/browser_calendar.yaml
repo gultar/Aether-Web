@@ -1,0 +1,45 @@
+name: browser_calendar
+handler: browser_calendar
+description: >-
+  Use the user's BrowserOS calendar, which merges published Outlook ICS events with local-only BrowserOS events.
+  For add, sync_with_outlook=false stores the event locally only. With sync_with_outlook=true, adding opens a pre-filled Outlook Web event in the user's normal signed-in browser and,
+  when BrowserOS Outlook Companion is installed, verifies the event and clicks Save automatically.
+  Only claim an add succeeded when the tool explicitly reports that Outlook confirmed the save.
+  If automatic confirmation fails or times out, say the event was opened but is not verified as saved.
+  Existing ICS events are read-only in BrowserOS and must be edited/deleted in Outlook Web. For list
+  requests, express relative time with period rather than putting words such as "tomorrow" or
+  "this week" in query. Never infer that there are no events from a tool error; a failed lookup
+  means the calendar is unverified.
+parameters:
+  type: object
+  properties:
+    action:
+      type: string
+      enum: [list, add]
+      description: Operation to perform. Defaults to list when omitted. add can create either a local-only BrowserOS event or an Outlook-synced event.
+    period:
+      type: string
+      enum: [today, tomorrow, this_week, next_week, next_7_days, custom]
+      description: Relative date window for action=list. Prefer this for requests such as today, tomorrow, this week, or next week. Use custom with start/end for an explicit range.
+    title:
+      type: string
+      description: Event title. Required for add. For list, can also be used as an optional title filter.
+    start:
+      type: string
+      description: Local calendar date/time, preferably YYYY-MM-DD or YYYY-MM-DDTHH:MM:SS. For list this is the inclusive start of a custom date range. Do not add Z unless the user explicitly gave UTC. Required for add.
+    end:
+      type: string
+      description: Local calendar end date/time. For list this is the inclusive end of a custom date range. For add, if omitted or not later than start, BrowserOS uses a one-hour duration for timed events.
+    query:
+      type: string
+      description: Optional event title/location text filter for action=list. Do NOT put temporal words such as tomorrow/this week here; use period. ISO dates and ISO date ranges are tolerated for small-model robustness.
+    location:
+      type: string
+      description: Optional event location.
+    all_day:
+      type: boolean
+      description: Whether the event is all-day.
+
+    sync_with_outlook:
+      type: boolean
+      description: For action=add, true (default) creates/saves through Outlook Web; false stores the event only in BrowserOS and never sends it to Outlook.

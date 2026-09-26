@@ -1,0 +1,9 @@
+name: browser_launch_app
+type: primitive
+handler: browser_launch_app
+description: Launch a configured native app.
+parameters:
+  type: object
+  properties:
+    name: {type: string}
+  required: [name]

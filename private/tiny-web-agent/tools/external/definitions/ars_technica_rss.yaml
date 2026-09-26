@@ -1,0 +1,25 @@
+name: ars_technica_rss
+
+file: ars_technica_rss.py
+
+function: ars_technica_rss
+
+label: Ars Technica IT News
+
+description: >-
+  Fetch the 10 latest Ars Technica technology and IT news articles from the
+  current RSS/Atom feed. Use this tool when the user asks for current IT news,
+  technology news, tech headlines, computing news, cybersecurity news, AI news,
+  software news, hardware news, semiconductor news, or recent Ars Technica
+  coverage. Always retrieve the live feed before making claims about current
+  news. Returns only the essential article information: title, description,
+  URL, and publication date.
+
+enabled_by_default: false
+
+timeout_seconds: 30
+
+parameters:
+  type: object
+  properties: {}
+  required: []

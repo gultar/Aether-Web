@@ -1,0 +1,11 @@
+name: browser_project_find
+type: primitive
+handler: browser_project_find
+description: Search Browser-OS source for exact text. The path may be one project-relative file or directory. Automatically ignores node_modules, .git, backups, and caches.
+parameters:
+  type: object
+  properties:
+    query: {type: string, description: Text or symbol to find, e.g. ApplicationWindow or launchApp.}
+    path: {type: string, description: Optional project-relative file or directory to restrict the search.}
+    max_matches: {type: integer, description: Maximum matches to return, 1 to 50.}
+  required: [query]

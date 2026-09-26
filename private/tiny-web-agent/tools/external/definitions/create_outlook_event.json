@@ -1,0 +1,45 @@
+{
+  "name": "create_outlook_event",
+  "file": "outlook_calendar.py",
+  "function": "create_outlook_event",
+  "label": "Create Outlook Event",
+  "description": "Create an event in the user's Outlook.com calendar. Use this tool when the user explicitly asks to create, add, schedule, or save a calendar event.",
+  "enabled_by_default": false,
+  "timeout_seconds": 60,
+  "parameters": {
+    "type": "object",
+    "properties": {
+      "subject": {
+        "type": "string",
+        "description": "Title or subject of the calendar event."
+      },
+      "start_date": {
+        "type": "string",
+        "description": "Start date in YYYY-MM-DD format. Example: 2026-08-20."
+      },
+      "start_time": {
+        "type": "string",
+        "description": "Start time in 24-hour HH:MM format. Example: 14:00."
+      },
+      "end_date": {
+        "type": "string",
+        "description": "End date in YYYY-MM-DD format. Usually the same as start_date."
+      },
+      "end_time": {
+        "type": "string",
+        "description": "End time in 24-hour HH:MM format. Example: 15:00."
+      },
+      "location": {
+        "type": "string",
+        "description": "Optional event location, such as an address, office, restaurant, or Microsoft Teams."
+      }
+    },
+    "required": [
+      "subject",
+      "start_date",
+      "start_time",
+      "end_date",
+      "end_time"
+    ]
+  }
+}

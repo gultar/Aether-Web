@@ -1,0 +1,7 @@
+{
+  "method": "ics-feed",
+  "icsUrl": "",
+  "publishedPageUrl": "",
+  "webCalendarUrl": "https://outlook.live.com/calendar/0/view/month",
+  "composeBaseUrl": "https://outlook.live.com/calendar/0/deeplink/compose"
+}

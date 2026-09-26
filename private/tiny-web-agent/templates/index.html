@@ -1,0 +1,233 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tiny Local Web Agent</title>
+  <link rel="stylesheet" href="/static/styles.css?v=20260926-conversation-scroll-v3">
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar" id="sidebar">
+      <div class="brand-row">
+        <div class="brand-mark">TL</div>
+        <div>
+          <div class="brand">Tiny Local</div>
+          <div class="brand-sub">Web Agent</div>
+        </div>
+      </div>
+
+      <button type="button" class="primary wide" id="new-chat-btn">+ New chat</button>
+      <label class="sidebar-preset-label" for="preset-select">Start with preset</label>
+      <select id="preset-select" class="sidebar-preset-select" title="Preset used for new chats">
+        <option value="">Default</option>
+      </select>
+
+      <div class="sidebar-label conversation-label-row">
+        <span>CONVERSATIONS</span>
+        <button type="button" class="conversation-select-toggle" id="conversation-select-btn">Select</button>
+      </div>
+      <div class="conversation-batch-bar" id="conversation-batch-bar" hidden>
+        <label class="conversation-select-all">
+          <input type="checkbox" id="conversation-select-all">
+          <span>All</span>
+        </label>
+        <span class="conversation-selection-count" id="conversation-selection-count">0 selected</span>
+        <button type="button" class="conversation-delete-selected" id="delete-selected-chats-btn" disabled>Delete</button>
+      </div>
+      <div class="conversation-list" id="conversation-list"></div>
+
+      <div class="sidebar-footer">
+        <button type="button" class="ghost wide" id="settings-btn">⚙ Settings</button>
+      </div>
+    </aside>
+
+    <main class="main-panel">
+      <header class="topbar">
+        <div class="chat-title-wrap">
+          <button type="button" class="icon-btn mobile-only" id="menu-btn">☰</button>
+          <input class="chat-title" id="chat-title" value="New chat" aria-label="Conversation title">
+        </div>
+        <div class="top-actions">
+          <select id="skill-select" class="skill-select" title="Choose a skill manually, or let Ministral select one automatically">
+            <option value="auto">Skill: Auto — Ministral chooses</option>
+          </select>
+          <button type="button" class="skill-why-btn" id="skill-why-btn" title="Send a message to inspect the most recent skill-routing decision" disabled>Why?</button>
+          <button type="button" class="skill-editor-open-btn" id="skill-editor-open-btn" title="Open BrowserOS Skills Editor">Edit Skills</button>
+          <button type="button" class="tool-summary-btn" id="tools-summary-btn" title="Open tool settings"><span id="active-tools-summary">Tools: 2 default</span></button>
+          <div class="model-picker-wrap">
+            <span class="model-dot" id="model-dot"></span>
+            <select id="model-select" class="model-select"></select>
+          </div>
+          <button type="button" class="vram-badge" id="vram-governor-badge" title="VRAM governor status">VRAM: checking…</button>
+          <button type="button" class="icon-btn" id="open-settings-btn" title="Conversation settings">⚙</button>
+        </div>
+      </header>
+
+      <section class="chat-scroll" id="chat-scroll">
+        <div class="empty-state" id="empty-state">
+          <div class="empty-logo">TL</div>
+          <h1>Your local model, without the baggage.</h1>
+          <p>Pick a GGUF model, keep your existing tools, and tune inference per conversation.</p>
+        </div>
+        <div class="messages" id="messages"></div>
+      </section>
+
+      <div class="activity" id="activity" aria-hidden="true">
+        <span class="spinner"></span>
+        <span id="activity-text">Thinking…</span>
+      </div>
+
+      <footer class="composer-wrap">
+        <div class="composer">
+          <input id="attachment-input" type="file" multiple hidden accept=".pdf,.docx,.txt,.md,.html,.htm,.csv,.json,.yaml,.yml">
+          <div class="attachment-strip" id="attachment-strip" hidden></div>
+          <textarea id="message-input" rows="1" placeholder="Message your local model…"></textarea>
+          <div class="composer-bottom">
+            <div class="runtime-stats" id="runtime-stats">Ready</div>
+            <div class="composer-actions">
+              <button type="button" class="secondary attach-btn" id="attach-btn" title="Attach document">📎 Attach</button>
+              <button type="button" class="stop-btn" id="stop-btn" hidden>Stop</button>
+              <button type="button" class="send-btn" id="send-btn" title="Send">↑</button>
+            </div>
+          </div>
+        </div>
+        <div class="hint">Enter to send or interrupt · Shift+Enter for a new line · conversations are stored locally in SQLite</div>
+      </footer>
+    </main>
+
+    <aside class="settings-panel" id="settings-panel" aria-hidden="true">
+      <div class="settings-header">
+        <div>
+          <h2>Conversation settings</h2>
+          <p>Load settings reload the model; sampling settings apply immediately.</p>
+        </div>
+        <button type="button" class="icon-btn" id="close-settings-btn">✕</button>
+      </div>
+
+      <div class="settings-scroll">
+        <section class="settings-section">
+          <h3>Presets</h3>
+          <label>Preset
+            <select id="preset-manager-select">
+              <option value="">New preset…</option>
+            </select>
+          </label>
+          <label>Name<input id="preset-name" placeholder="Researcher"></label>
+          <label>Description<input id="preset-description" placeholder="Optional description"></label>
+          <div class="preset-actions">
+            <button type="button" class="secondary" id="load-preset-btn">Load into settings</button>
+            <button type="button" class="primary" id="save-preset-btn">Save as new</button>
+            <button type="button" class="secondary" id="update-preset-btn">Update selected</button>
+            <button type="button" class="danger ghost" id="delete-preset-btn">Delete</button>
+          </div>
+          <div class="small-note">A preset is a snapshot of the model, system prompt, toolset, generation/loading settings, and compaction defaults. Existing conversations are not changed when a preset is edited.</div>
+        </section>
+
+        <section class="settings-section">
+          <h3>Model</h3>
+          <label>Model
+            <select id="settings-model-select"></select>
+          </label>
+          <div class="inline-row">
+            <input id="model-path-input" placeholder="D:\\Models\\model.gguf or folder">
+            <button type="button" class="secondary" id="browse-model-btn">Browse…</button>
+            <button type="button" class="secondary" id="add-model-btn">Add path</button>
+          </div>
+          <div class="small-note">No model is bundled or selected automatically. Browse selects and registers an existing GGUF by absolute path without copying it; Add path can also register an existing file/folder. Removing a model only removes it from this list; it never deletes the GGUF.</div>
+          <div id="model-list-settings" class="model-list-settings"></div>
+        </section>
+
+        <section class="settings-section">
+          <h3>Sampling</h3>
+          <div class="grid-2">
+            <label>Temperature<input type="number" step="0.01" min="0" max="2" id="temperature"></label>
+            <label>Max output tokens<input type="number" step="1" min="1" id="max_tokens"></label>
+            <label>Top P<input type="number" step="0.01" min="0" max="1" id="top_p" placeholder="Auto"></label>
+            <label>Top K<input type="number" step="1" min="0" id="top_k" placeholder="Auto"></label>
+            <label>Repeat penalty<input type="number" step="0.01" min="0.5" max="2" id="repeat_penalty" placeholder="Auto"></label>
+          </div>
+        </section>
+
+        <section class="settings-section">
+          <h3>Model loading</h3>
+          <div class="grid-2">
+            <label>Context length<input type="number" step="512" min="512" id="context_length"></label>
+            <label>GPU layers<input type="number" step="1" min="-1" id="gpu_layers"><span class="field-help">-1 = all layers</span></label>
+            <label>Batch size<input type="number" step="32" min="32" id="n_batch" placeholder="Auto (llama.cpp default)"></label>
+            <label>Micro-batch<input type="number" step="32" min="32" id="n_ubatch" placeholder="Auto (llama.cpp default)"></label>
+            <label>CPU threads<input type="number" step="1" min="1" id="threads"></label>
+            <label>KV cache
+              <select id="kv_cache">
+                <option value="default">Auto (llama.cpp default)</option>
+                <option value="f16">F16</option>
+                <option value="q8_0">Q8_0</option>
+                <option value="q4_0">Q4_0</option>
+              </select>
+            </label>
+          </div>
+          <label class="toggle-row"><input type="checkbox" id="flash_attention"><span>Flash Attention</span></label>
+          <label>Offload K/Q/V
+            <select id="offload_kqv">
+              <option value="auto">Auto (llama.cpp default)</option>
+              <option value="on">On</option>
+              <option value="off">Off</option>
+            </select>
+          </label>
+        </section>
+
+        <section class="settings-section">
+          <h3>Agent</h3>
+          <label class="toggle-row"><input type="checkbox" id="tools_enabled"><span>Enable tools</span></label>
+          <div class="tool-toggle-list" id="tool-toggle-list"></div>
+          <div class="field-help tool-help">Only checked tools are exposed to the model. The v2 default is DuckDuckGo + CBC Top Stories; other tools remain registered here so you can explicitly enable them when needed.</div>
+          <details class="external-tool-box">
+            <summary>Add external tool</summary>
+            <div class="external-tool-content">
+              <div class="field-help">External tool directory: <code id="external-tools-dir">tools/external</code></div>
+              <input id="external-tool-file-input" type="file" accept=".py,text/x-python" hidden>
+              <div class="external-tool-actions">
+                <button type="button" class="secondary" id="import-tool-file-btn">Import Python file</button>
+              </div>
+              <div class="field-help" id="external-tool-file-status">Import a .py file here, or place it directly in the directory shown above.</div>
+              <textarea id="external-tool-definition" rows="14" spellcheck="false" placeholder="Paste JSON or YAML tool definition…"></textarea>
+              <div class="external-tool-actions">
+                <button type="button" class="secondary" id="tool-template-btn">Load template</button>
+                <button type="button" class="secondary" id="reload-tools-btn">Reload tools</button>
+                <button type="button" class="primary" id="register-tool-btn">Register definition</button>
+              </div>
+              <div class="field-help">External tools run in a separate Python process. A Python runtime is required only for these added tools.</div>
+            </div>
+          </details>
+
+          <label>Maximum tool calls<input type="number" step="1" min="0" id="max_tool_calls"></label>
+          <label>System prompt<textarea id="system_prompt" rows="7"></textarea></label>
+        </section>
+
+        <section class="settings-section">
+          <h3>Conversation compaction</h3>
+          <label class="toggle-row"><input type="checkbox" id="compaction_enabled"><span>Compact older turns</span></label>
+          <div class="grid-2">
+            <label>Trigger tokens<input type="number" step="100" min="512" id="compaction_threshold"></label>
+            <label>Target tokens<input type="number" step="100" min="256" id="compaction_target"></label>
+            <label>Recent turns kept<input type="number" step="1" min="1" id="keep_recent_turns"></label>
+            <label>Summary max tokens<input type="number" step="10" min="32" id="summary_max_tokens"></label>
+          </div>
+        </section>
+      </div>
+
+      <div class="settings-footer">
+        <button type="button" class="danger ghost" id="delete-chat-btn">Delete chat</button>
+        <div class="settings-footer-actions">
+          <button type="button" class="secondary" id="reset-settings-btn">Recommended defaults</button>
+          <button type="button" class="primary" id="save-settings-btn">Save settings</button>
+        </div>
+      </div>
+    </aside>
+
+    <button type="button" class="sidebar-backdrop" id="sidebar-backdrop" aria-label="Close conversation sidebar"></button>
+    <div class="toast" id="toast" hidden></div>
+  </div>
+  <script src="/static/app.js?v=20260910-vram-governor-v42"></script>
+</body>
+</html>

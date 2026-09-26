@@ -1,0 +1,7 @@
+name: browser_system_info
+type: primitive
+handler: browser_system_info
+description: Read CPU, RAM, GPU, VRAM, and uptime.
+parameters:
+  type: object
+  properties: {}

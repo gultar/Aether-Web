@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Geomancy — BrowserOS</title>
+<link rel="stylesheet" href="geomancy.css">
+</head><body>
+<div class="shell">
+  <div class="topbar">
+    <div><div class="eyebrow">BrowserOS · Geomancy</div><h1>Geomantic Chart</h1><div class="sub">Shield, twelve houses, court, perfection, lots and AI interpretation.</div></div>
+    <div class="querybox"><input id="query" placeholder="Ask a question or enter a seed phrase…"><button id="cast" class="primary">Cast chart</button></div>
+  </div>
+  <div class="meta"><span class="pill">Cast ID <b id="castid"></b></span><span class="pill">Classical shield derivation</span><span class="pill">Blue = Fortune · Rose = Spirit</span></div>
+  <div class="grid">
+    <div class="sidegrid">
+      <section class="card"><div class="cardhead"><h2>Shield Chart</h2><span class="sub">Mothers · Daughters · Nieces · Court</span></div><div class="body"><div id="shield" class="shield"></div></div></section>
+      <section class="card"><div class="cardhead"><h2>Twelve Houses</h2><span class="sub">Traditional square chart</span></div><div class="body"><div id="houseSquare" class="house-square"></div></div></section>
+      <section class="card"><div class="cardhead"><h2>House List</h2><span class="sub">I–XII</span></div><div class="body"><div id="houses" class="housegrid"></div></div></section>
+    </div>
+    <div class="sidegrid">
+      <section class="card"><div class="cardhead"><h2>Reading Summary</h2></div><div class="body">
+        <div class="statrow"><div class="stat"><small>Judge</small><strong id="judgeName"></strong></div><div class="stat"><small>Sum (96)</small><strong id="sum"></strong></div><div class="stat"><small>Fortune</small><strong id="fortune"></strong></div><div class="stat"><small>Spirit</small><strong id="spirit"></strong></div></div>
+      </div></section>
+      <section class="card perfection-card">
+        <div class="cardhead"><h2>Perfection</h2><span id="perfectionBadge" class="perfection-badge">—</span></div>
+        <div class="body">
+          <div class="significator-grid">
+            <label><span>Querent significator</span><select id="querentHouse"></select></label>
+            <label><span>Quesited significator</span><select id="quesitedHouse"></select></label>
+          </div>
+          <div id="perfectionSummary" class="perfection-summary"></div>
+          <div id="perfectionModes" class="perfection-modes"></div>
+          <div class="perfection-note">Changing significators recalculates perfection without recasting the chart.</div>
+        </div>
+      </section>
+      <section class="card"><div class="cardhead"><h2>Court</h2></div><div class="body"><div id="court" class="court"></div></div></section>
+      <section class="card"><div class="cardhead"><h2>Triplicities / Triads</h2></div><div class="body"><div id="triplicities" class="list"></div></div></section>
+      <section class="card"><div class="cardhead"><h2>Via Puncti</h2></div><div class="body"><div id="via" class="list"></div></div></section>
+      <section class="card"><div class="cardhead"><h2>AI Interpretation</h2><div class="actions"><button id="copy">Copy chart JSON</button><button id="interpret" class="primary">Interpret with AI</button></div></div><div class="body"><div class="ai-note">Sends this exact cast, selected significators, and detected perfection to Tiny Web Agent.</div><details><summary>View interpretation payload</summary><pre id="payload"></pre></details></div></section>
+    </div>
+  </div>
+</div>
+<script src="geomancy-engine.js"></script><script src="geomancy-app.js"></script>
+</body></html>

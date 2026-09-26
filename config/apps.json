@@ -1,0 +1,5 @@
+[
+  {"id":"powershell","name":"PowerShell","command":"powershell.exe","args":[]},
+  {"id":"calculator","name":"Calculator","command":"calc.exe","args":[]},
+  {"id":"notepad","name":"Notepad","command":"notepad.exe","args":[]}
+]
