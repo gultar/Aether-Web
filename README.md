@@ -1,141 +1,148 @@
-# Browser-OS v9 — Outlook Calendar
+# Aether-Web
 
-Agenda is now a full Outlook-backed calendar with **Agenda, Week, Month, and Year** views. It reuses Tiny Web Agent's persistent Playwright Outlook profile; no Entra/Graph client ID is required. Outlook events are cached for five minutes; **Refresh** forces a new scrape. The Year view intentionally shows compact event-count badges rather than full titles.
+**Aether-Web** is an experimental Windows-first local desktop environment that runs in the browser and combines a customizable desktop shell, local AI agents, automation, system tools, lightweight applications, and personal productivity features in one interface.
 
-# Browser-OS + Tiny Web Agent
+It is designed primarily as a **local-first personal workspace** rather than a traditional operating system. The browser provides the desktop and application interface, while a local Node.js server and optional Python services handle system integration, AI inference, tools, scheduling, calendar access, voice transcription, and other native functionality.
 
-This build merges the supplied Tiny Web Agent Interface into Browser-OS. Tiny Web Agent remains a Python/Flask + llama-cpp-python service, but Browser-OS supervises it and presents it as a normal Browser-OS tool window.
+> **Project status:** Experimental / alpha  
+> **Primary platform:** Windows 11  
+> **Networking:** Localhost by default  
+> **AI:** Local GGUF models through `llama-cpp-python`
 
-## First run
+Aether-Web was built and tested as a personal project. It may require manual configuration on machines other than the development environment.
 
-1. Run `npm install`.
-2. If your current Python environment already has the Tiny Web Agent dependencies, no extra step is needed. Otherwise run `setup-agent.bat`.
-3. Run `npm start` (or `start-browser-os.bat`).
-4. Open `http://127.0.0.1:8001`.
-5. Launch **Tiny Web Agent** from the desktop, menu, command palette, or Terminal command `ai`.
+---
 
-Opening the AI window starts the local Flask service on port 7860. It does **not** load a GGUF model by itself. Model loading remains under Tiny Web Agent's existing logic/settings.
+## What is Aether-Web?
 
+Aether-Web gives you a desktop-like environment inside your browser with:
 
-## Local-only networking
+- movable application windows
+- a desktop and application launcher
+- a configurable dock
+- system monitoring
+- terminal commands
+- local AI chat
+- a separate AI-controlled system context
+- tools and skills
+- scheduled tasks
+- reminders and timers
+- local voice transcription
+- Outlook calendar integration
+- news and research tools
+- notes and todos
+- custom desktop applications
+- persistent appearance and layout settings
 
-This build intentionally binds BrowserOS to `127.0.0.1:8001` and launches Tiny Web Agent on `127.0.0.1:7860`. The shared `--host` / LAN-exposure changes have been removed. BrowserOS is intended to be used on the same computer as the local model.
+The goal is to make a local LLM useful as part of the desktop itself rather than limiting it to a standalone chat window.
 
-Tiny Web Agent also checks `chat.db` at startup. If SQLite reports that the database is malformed, the damaged file is preserved as a timestamped `.malformed-...bak` and a fresh database is created so the UI can start.
+---
 
-## Python selection
+# Screens and applications
 
-Browser-OS tries `TINY_AGENT_PYTHON`, then `PYTHON`, then `python`/`py` on Windows. If your CUDA-enabled llama-cpp-python lives in a specific Python installation, launch Browser-OS with for example:
+Aether-Web currently includes or integrates:
 
-```powershell
-$env:TINY_AGENT_PYTHON = "C:\Path\To\python.exe"
-npm start
-```
+### Core desktop
 
-## Privacy
+- WinBox-based desktop windows
+- draggable desktop icons
+- multi-select desktop icons
+- grid alignment
+- configurable quick-launch dock
+- auto-hiding bottom dock
+- optional right-side workspace dock
+- responsive layouts for smaller displays
+- customizable window transparency, blur, tint, border, radius, and shadow
+- persistent desktop/window layout
+- configurable backgrounds
+- command palette
+- categorized application menu
 
-Tiny Web Agent is stored under `private/tiny-web-agent`. Browser-OS explicitly blocks `/private` from HTTP static serving. This protects `data/chat.db`, attachments, Python source, and the supplied `outlook_profile`.
+### System tools
 
-## Agent service endpoints
+- CPU usage
+- per-core CPU information
+- RAM usage
+- GPU / VRAM information when available
+- disk information
+- network information
+- running processes
+- uptime
+- battery information where supported
+- configurable local service monitoring
+- installed Windows application discovery
 
-- `GET /api/agent/status`
-- `POST /api/agent/start`
-- `POST /api/agent/stop`
+### Productivity
 
-# Browser-OS local dashboard
+- Notes
+- Todos
+- Timers
+- Future reminders
+- Bookmarks
+- Clipboard tools
+- Calendar
+- Terminal aliases
+- Scheduled Tasks
 
-This build keeps the original Browser-OS window-manager styling/assets and layers useful local dashboard tools on top.
+### Included applications
 
-## Start
+- **Tiny Web Agent**
+- **Geomancy**
+- **Riftbreakers VTT**
+- **Tiny Ecosystem**
+- **Tamagotchi**
+- **System Monitor**
+- **Terminal**
+- **News**
+- **Calendar / Agenda**
+- **Tool Editor**
+- **Skills Editor**
+- **Collaboration Harness**
 
-```powershell
-npm install
-npm start
-```
+Some applications are self-contained HTML/JavaScript tools, while others communicate with the local backend or AI service.
 
-Open `http://127.0.0.1:8001` and set it as your browser home page if desired.
+---
 
-## Included tools
+# Local AI
 
-- Original Browser-OS Terminal and WinBox-based window manager
-- System monitor: CPU, per-core load, RAM, GPU, VRAM, temperatures, battery, uptime
-- Processes, network traffic, disk-space and local-service panels
-- Clipboard history (captured on demand because browsers require clipboard permission)
-- Persistent quick notes, todo list, bookmarks and timers/alarms
-- Search launcher and Ctrl+Space command palette
-- Allowlisted native Windows application launcher
-- Expanded RSS reader with multiple feeds and read/unread state
-- Weather via Open-Meteo
-- Optional Outlook agenda via Microsoft Graph
+Aether-Web integrates a local Python/Flask AI service called **Tiny Web Agent**.
 
-## Native app launcher
+The AI backend uses `llama-cpp-python` and is intended to run GGUF models locally.
 
-Edit `config/apps.json`. Only entries in this file can be launched. Browser-OS does **not** expose an arbitrary shell-command API.
+No model is included in this repository.
 
-Example:
+You must provide your own compatible GGUF model.
 
-```json
-{"id":"powershell","name":"PowerShell","command":"powershell.exe","args":[]}
-```
+## Two AI contexts
 
-## Local service monitor
+Aether-Web separates AI interaction into two contexts.
 
-Edit `config/services.json` and add the localhost/LAN TCP services you want Browser-OS to watch.
+### Chat context
 
-## Outlook agenda
+The normal Tiny Web Agent interface.
 
-Outlook is optional. Register a **public client/native application** in Microsoft Entra, enable public client/device-code flows, and grant delegated `Calendars.Read` plus `User.Read`. Put the Application (client) ID in:
+It can maintain conversations and use whichever tools are enabled by the selected Skill.
 
-`config/outlook.json`
+This is intended for:
 
-```json
-{
-  "clientId": "YOUR-APPLICATION-CLIENT-ID",
-  "tenant": "common"
-}
-```
+- conversation
+- coding
+- web research
+- translation
+- structured tools
+- custom workflows
+- document-related tasks
+- general assistant use
 
-Restart Browser-OS, open **Menu → Agenda**, then click **Connect**. Browser-OS stores the MSAL token cache locally in `data/msal-cache.json`.
+### OS context
 
-No client secret belongs in this project.
+A separate short-lived context used to operate Aether-Web itself.
 
-## Keyboard shortcuts
+It does not reuse the main chat history.
 
-- `Ctrl+Alt+T` — new Terminal
-- `Ctrl+Space` — command palette
-- `Ctrl+Tab` — original Browser-OS window cycling
+This helps keep system commands focused and reduces context pollution.
 
-## Terminal additions
-
-Useful dashboard commands include `system`, `news`, `weather`, `agenda`, `processes`, `network`, `disks`, `services`, `launch`, `notes`, `todo`, `clipboard`, `bookmarks`, `timer`, and `palette`.
-
-## Background settings
-
-Open **Menu → Background** (or right-click the desktop → Tools → Background). Browser-OS supports preset gradients, custom two-colour gradients, flat colours, local image files, and image URLs. Local image wallpapers are stored in IndexedDB so they persist without placing large image data in localStorage. The Terminal command `background` opens the same settings window; `background https://...` sets an image URL directly.
-
-## Riftbreakers VTT integration
-
-The supplied Riftbreakers 2e VTT is bundled unchanged at `apps/riftbreakers-vtt.html` and opens inside a Browser-OS `ApplicationWindow`.
-
-Launch it from:
-- the Riftbreakers VTT desktop icon (automatically added once to existing layouts),
-- Menu → Riftbreakers VTT,
-- desktop right-click → Tools → Riftbreakers VTT,
-- the command palette,
-- Terminal: `riftbreakers` or `vtt`.
-
-The VTT remains a standalone same-origin HTML app, so its existing campaign/session autosave and browser storage continue to work.
-
-## Split Ministral contexts
-
-Browser-OS now gives the same loaded Ministral model two deliberately separate contexts:
-
-- **Chat context** — the normal Tiny Web Agent window. It keeps its existing conversation history, settings, and normal Tiny Web Agent tools.
-- **OS context** — a short-lived Browser-OS control context. It does not reuse chat history and cannot see the general chat/web/file/PowerShell/Outlook tools.
-
-The OS context currently exposes only six focused functions: window control, system stats, scratchpad notes, todo creation, timers, and allow-listed native app launching.
-
-Use it from Terminal:
+For example:
 
 ```text
 os open weather and start a 20m timer
@@ -143,34 +150,107 @@ os add buy batteries to my todo list
 os show me system usage
 ```
 
-Or press **Ctrl+Space** and type a natural-language Browser-OS instruction. Exact launcher names still open directly; other entered text is sent to the OS context.
+The two contexts can share the same loaded model. A second copy of the GGUF does not need to be loaded simply because both contexts exist.
 
-The Python service is still started lazily and both contexts share the same single llama.cpp model instance; the OS context does not load a second copy of the GGUF.
+---
 
+# Skills
 
-## OS agent tool detail display
+Tiny Web Agent supports **Skills**: Markdown files that describe how the model should perform particular types of tasks.
 
-The OS context now streams structured execution events to the Browser-OS Terminal and OS Agent window. During an `os` command, the UI shows model/thinking status, each selected OS tool, its arguments, its returned result, and execution time before the final short OS response. The normal Tiny Web Agent chat remains separate.
+Skills live under:
 
-## v5 changes
-- Browser-OS OS-agent replies now stream token-by-token in the Terminal and OS Agent window. Tool events remain visible inline during multi-step requests.
-- Chrome bookmarks are displayed as collapsible nested folders using the folder paths stored in Chrome's Bookmarks file. Chrome sync remains read-only.
+```text
+private/tiny-web-agent/skills/
+```
 
+Examples currently include:
 
-## v7.2 clear behavior
+```text
+general
+browse
+research
+code-builder
+browser-os-dev
+geomancy-reader
+english-translator
+french-translator
+news
+system
+app-launcher
+```
 
-`clear` now clears the Terminal immediately, cancels any active OS generation, and resets llama.cpp's active KV/context cache. It does not modify or delete Tiny Web Agent chat conversations. The Browser-OS OS agent already starts each command with an empty message state, so this reset is primarily a hard model-cache reset.
+Aether-Web supports categorized skill routing.
 
+Instead of exposing every Skill at once, the router can first select a category and then select a Skill within that category.
 
-## v8 — YAML tools + create_tool hot-plugging
+This is particularly useful with small local models because it reduces the number of instructions and tools presented during a task.
 
-Browser-OS OS-agent tool definitions now live under `private/tiny-web-agent/os_tools/definitions/*.yaml`. Primitive execution handlers remain trusted Python functions, but the model-facing names, descriptions, parameters, enums, and argument documentation are YAML-defined.
+The **Skills Editor** can be used to create, modify, organize, and delete Skills and Skill categories.
 
-The OS agent also has `create_tool`, which accepts a YAML `type: workflow` definition. Valid workflows are persisted to `private/tiny-web-agent/os_tools/generated/<name>.yaml` and inserted into the live OS tool registry immediately. The new tool is therefore available on the next inference pass—even later in the same `os` request—without restarting Browser-OS, Flask, or the model. Generated workflows may compose existing Browser-OS tools but cannot add arbitrary Python, JavaScript, PowerShell, shell handlers, or replace built-in primitive names.
+---
 
-Example request: `os create a tool called morning_setup that opens Weather and Agenda, then run it.`
+# Tools
 
-Equivalent generated YAML:
+AI tools are defined separately from Skills.
+
+Tool definitions are primarily YAML files, while executable handlers are implemented in Python.
+
+Built-in OS tool definitions live under:
+
+```text
+private/tiny-web-agent/os_tools/definitions/
+```
+
+External tools live under:
+
+```text
+private/tiny-web-agent/tools/external/
+```
+
+and their definitions under:
+
+```text
+private/tiny-web-agent/tools/external/definitions/
+```
+
+---
+
+## Tool Editor
+
+Aether-Web includes a graphical **Tool Editor**.
+
+It can:
+
+- create a Python tool
+- define its parameters
+- generate its YAML definition
+- validate the Python implementation
+- validate the JSON Schema
+- save both files
+- reload the tool registry without restarting Aether-Web
+
+Once loaded, external tools can be exposed to:
+
+- Tiny Web Agent
+- Skills
+- Scheduled Tasks
+
+Open the editor from the menu, command palette, desktop tools, or Terminal:
+
+```text
+tooleditor
+```
+
+---
+
+# Dynamic OS workflows
+
+The OS agent also supports YAML-defined workflows.
+
+A workflow can combine existing trusted tools without introducing arbitrary shell or Python execution.
+
+For example:
 
 ```yaml
 name: morning_setup
@@ -179,168 +259,820 @@ description: Open Weather and Agenda.
 parameters: {}
 steps:
   - tool: browser_window
-    arguments: {action: open, target: weather}
+    arguments:
+      action: open
+      target: weather
+
   - tool: browser_window
-    arguments: {action: open, target: agenda}
+    arguments:
+      action: open
+      target: agenda
 ```
 
-Workflow arguments can be referenced with `{{args.name}}`; prior step results can be referenced with `{{steps.0.result}}`. Generated tools are reloaded automatically on the next Tiny Web Agent startup.
+Generated workflows are stored under:
 
+```text
+private/tiny-web-agent/os_tools/generated/
+```
 
-## Outlook Calendar (ICS feed)
+They can be loaded into the live tool registry without restarting the local model.
 
-BrowserOS now reads Outlook through the published calendar ICS feed instead of scraping Outlook Web with Playwright.
+---
 
-- Calendar refreshes fetch the same published `.ics` URL repeatedly; no repeated download or sign-in is required.
-- The feed URL is kept in server-side local configuration and is not returned to Tiny Web Agent.
-- On first launch the bundled calendar config is copied to `%LOCALAPPDATA%\BrowserOS\outlook.json`, so later BrowserOS replacements keep the calendar source.
-- **Refresh** forces an immediate feed fetch. BrowserOS otherwise keeps a short two-minute in-memory cache.
-- The last successful in-memory snapshot is retained if a temporary network refresh fails.
-- Recurring daily/weekly/monthly/yearly events and common EXDATE/RECURRENCE-ID overrides are expanded locally.
+# Scheduled Tasks
 
-Published ICS feeds are read-only. **+ New event** therefore opens a pre-filled Outlook Web event in the user's normal default browser, reusing that browser's existing Microsoft login. The user reviews the event and clicks **Save** in Outlook. Existing imported events open as read-only details in BrowserOS with an **Open Outlook Web** button for edits/deletes.
+Aether-Web contains a persistent task scheduler.
 
-Normal calendar reading no longer launches Chromium or relies on Outlook DOM selectors. The legacy Playwright bridge remains in the project only for compatibility with older code paths; it is not used by Calendar refreshes.
+Tasks can be used for things such as:
 
+- reminders
+- recurring reminders
+- application launches
+- calendar checks
+- scheduled prompts
+- AI-assisted scheduled actions
 
-## v9.3 Research citation behavior
-Research answers no longer require inline [n] citations or a Sources section. Citations are optional and should only be used when they materially aid verification, clarify conflicting evidence, or the user explicitly asks for sources.
+Task history and task configuration are handled locally.
 
+---
 
-## v9.5 Windows application launcher
+# Timers and reminders
 
-The Browser-OS Applications window now discovers installed Windows Start apps dynamically with `Get-StartApps`, while preserving explicit entries from `config/apps.json`. The launcher supports live text filtering, Enter-to-launch for the top match, click-to-launch, and a refresh button that rebuilds the Windows app cache. Discovered Start apps are launched through `explorer.exe shell:AppsFolder\<AppID>`. The backend exposes structured app metadata (`name`, `id`, `source`) so a future agent-side similarity/semantic matcher can reuse the same catalog without scraping the UI.
+Timers and future reminders share a common alarm system.
 
+Supported examples include:
 
-## Persistent terminal website aliases
+```text
+20s
+5m
+2h
+3d
+```
 
-Browser-OS terminal aliases are stored in `config/terminal-shortcuts.json`. Examples:
+Future reminders can also use a specific local date and time.
+
+When an alarm fires, Aether-Web can:
+
+- show an in-app alert
+- display a desktop notification when allowed
+- play an audible alert
+- repeat the alarm until dismissed
+
+---
+
+# Local voice input
+
+Aether-Web supports local speech-to-text using **Faster-Whisper**.
+
+The Terminal microphone button records audio in the browser and sends it to a local Python worker.
+
+The resulting transcription is inserted into the Terminal input so you can review it before submitting it.
+
+The default model location is:
+
+```text
+models\faster-whisper-small.en
+```
+
+You can override it with:
+
+```powershell
+$env:BROWSER_OS_WHISPER_MODEL = "C:\path\to\your\faster-whisper-model"
+```
+
+Install Faster-Whisper in the Python environment used by Aether-Web:
+
+```powershell
+python -m pip install faster-whisper
+```
+
+Whisper models are **not included** in this repository.
+
+---
+
+# Outlook calendar
+
+Aether-Web can display an Outlook calendar using a published `.ics` feed.
+
+Calendar reads are performed locally by the backend.
+
+The calendar supports:
+
+- Agenda view
+- Week view
+- Month view
+- Year view
+- recurring events
+- common recurrence exceptions
+- manual refresh
+- short in-memory caching
+
+The ICS URL remains in local server-side configuration and is not intended to be exposed to the AI model.
+
+Because published ICS feeds are read-only, event creation opens a pre-filled Outlook Web event in your normal browser.
+
+Existing events can also be opened in Outlook Web for editing or deletion.
+
+Legacy Outlook / Playwright integration remains in parts of the project for compatibility, but normal calendar refreshes use the ICS feed.
+
+Do not commit your private ICS URL.
+
+---
+
+# Windows application launcher
+
+Aether-Web can discover installed applications using Windows `Get-StartApps`.
+
+Applications are launched through:
+
+```text
+explorer.exe shell:AppsFolder\<AppID>
+```
+
+Explicit applications can also be configured manually in:
+
+```text
+config/apps.json
+```
+
+Example:
+
+```json
+{
+  "id": "powershell",
+  "name": "PowerShell",
+  "command": "powershell.exe",
+  "args": []
+}
+```
+
+The launcher provides:
+
+- live filtering
+- click-to-launch
+- Enter-to-launch
+- Windows Start app discovery
+- manually configured applications
+- refreshable application cache
+
+---
+
+# Terminal
+
+The built-in Terminal provides both regular commands and access to the OS agent.
+
+Common commands include:
+
+```text
+ai
+os
+system
+news
+agenda
+processes
+network
+disks
+services
+launch
+notes
+todo
+timer
+background
+appearance
+ecosystem
+tamagotchi
+geomancy
+riftbreakers
+tooleditor
+```
+
+Run:
+
+```text
+help
+```
+
+for the commands available in your current build.
+
+---
+
+## OS Agent mode
+
+Typing:
+
+```text
+os
+```
+
+toggles persistent OS Agent mode.
+
+While enabled, normal Terminal text is treated as an AI instruction.
+
+Exit with:
+
+```text
+/exit
+```
+
+or:
+
+```text
+os off
+```
+
+You can also issue a one-shot command:
+
+```text
+os open the system monitor
+```
+
+---
+
+# Website aliases
+
+Persistent website shortcuts are stored in:
+
+```text
+config/terminal-shortcuts.json
+```
+
+Examples:
 
 ```text
 alias yt,y https://youtube.com
-alias fb,f https://facebook.com
 alias gh https://github.com
 aliases
 unalias gh
-unalias yt,y
 ```
 
-Typing a saved alias by itself opens its website in a new browser tab. Built-in terminal command names are reserved and cannot be overwritten. The default config includes `yt`, `y`, `fb`, and `f`.
+Typing the alias alone opens the associated website.
 
-## v9.7 — Collapsible terminal traces
+---
 
-OS-agent tool calls, tool results, and Research source/evidence metadata are rendered as native collapsible terminal sections. They default to collapsed and can be individually expanded with the disclosure arrow. The Terminal also adds **Expand all** and **Collapse all** controls once trace output appears. Final OS/Research responses remain visible normally.
+# Research
 
+Tiny Web Agent includes browser and research tooling for tasks that need external information.
 
-## v9.8 right dock
+Research output can include source metadata and execution traces.
 
-Browser-OS now includes a persistent, resizable right-side workspace dock. Terminal and System Monitor can live as interactive dock panels, be resized vertically, pinned in the saved layout, removed, or detached back into normal WinBox windows. Normal Terminal/System windows also include a dock control. Dock width, visibility, panel proportions, and pin state persist in localStorage.
+Tool calls and research traces displayed in the Terminal are collapsible.
 
-## v9.9 responsive shell
+The interface provides:
 
-Browser-OS now adapts across desktop, narrow laptop/tablet, and phone-sized viewports. Open WinBox windows are resized and clamped back inside the usable viewport when the browser is resized or rotated. Below 900 px the right workspace dock becomes an overlay drawer instead of consuming desktop width; below 700 px regular windows become full-width application panels beneath the top menu. Built-in tools use responsive internal layouts while Terminal keeps a readable 13 px font on small screens.
+- per-section expand/collapse
+- Expand all
+- Collapse all
 
+---
 
-## Tiny Ecosystem (v9.10.14)
-- Open from Menu → Ecosystem, terminal `ecosystem`, or the command palette.
-- Add it to the right dock with the `E` dock button; detached Ecosystem windows can dock back with the title-bar dock control.
-- Interactive canvas simulation: grass, herbivores, predators, energy, aging, reproduction, hunting, starvation, and population history.
-- Hover controls paint grass, spawn creatures, erase, pause, reset, and change simulation speed. Click a creature to inspect it; double-click to mark/unmark follow mode; right-click erases.
-- The animation pauses automatically when hidden/off-screen or when the document is backgrounded.
+# Geomancy
 
-## Tiny Tamagotchi (v9.10.15)
-- Open from Menu → Tamagotchi, terminal `tamagotchi` / `tama`, Command Palette, or dock with the ♥ button.
-- Persistent pixel pet state is stored locally under `browser-os-tamagotchi-v1`.
-- Hand-authored 16×16 canvas sprites: idle, happy, sad, sleeping, eating, playing, medicine.
-- Needs: food, mood, energy, cleanliness and health.
-- Actions: feed, play, clean, sleep/wake, medicine; click the pet to pet it; double-click its name to rename it.
-- Real elapsed time is applied when the widget wakes/reopens, while rendering pauses when hidden.
+Aether-Web includes a dedicated geomancy application.
 
-## Tamagotchi collection (v9.10.16)
-- Multiple persistent pets with independent age/needs/state.
-- Pet selector plus sprite selector; `+` creates another creature and `-` removes the selected one.
-- Six original 20x20 pixel creature families: Mossbit, Voltfin, Cinderhorn, Shellbyte, Noctwing, Ironpup.
-- Existing v1 Tamagotchi state migrates automatically to the new collection format.
-- Larger status labels, percentage readouts, and thicker bars.
-- `?` shows the real-time need decay/recovery rates.
+It can generate and display a complete geomantic chart and integrate with Tiny Web Agent for interpretation.
 
+The application is under:
 
-## Defined pixel sprites (v9.10.17)
-- Redrew all six Tamagotchi species directly in Canvas code on a 28×28 logical pixel grid.
-- Clearer silhouettes with distinct heads, limbs, tails/wings, horns/armor, eyes, and internal shading.
-- No generated/external image assets; sprites remain crisp Canvas-rendered pixel art.
+```text
+apps/geomancy/
+```
 
+Its AI Skill is:
 
-## Reference-sheet sprites (v9.10.18)
+```text
+private/tiny-web-agent/skills/geomancy-reader.md
+```
 
-- Replaced the six hand-built Tamagotchi silhouettes with 18x18 canvas bitmaps traced from the user-provided reference sprite sheet.
-- The silhouettes remain in JavaScript; no external sprite image assets are shipped.
-- Palettes are lightly recolored for Browser-OS while retaining the sharper anatomy and proportions of the references.
-- Existing pet collection, persistence, needs, actions, docking and status UI are unchanged.
+and its callable tool is:
 
+```text
+private/tiny-web-agent/tools/external/geomancy_cast.py
+```
 
-## Unique pet play animations (v9.10.19)
-Each Tamagotchi species now has a visible, species-specific canvas animation when Play is pressed: Mossbit pounces with pixel stars; Voltfin jitters with lightning; Cinderhorn performs short charges with dust; Shellbyte rolls/spins with glints; Noctwing swoops with flight streaks; Ironpup runs zoomies with bounding hops and dust. Play animation lasts about 2.8 seconds. The existing sprite bitmaps remain embedded in JavaScript; no external/generated image assets are used.
+Geomancy can be opened from the desktop, menu, command palette, or Terminal.
 
+---
 
-## Tamagotchi care animations
-Feed now animates food approaching the creature and being eaten in several bites with crumbs/chewing motion. Medicine shows a capsule entering the scene, a brief pet reaction, and healing-cross sparkles. Clean now has a visible sponge sweep, soap bubbles, sparkle pixels, and a small pet shake. These are all rendered directly in the Tamagotchi canvas; no generated or external sprite image assets are used.
+# Riftbreakers VTT
 
+Aether-Web includes a browser-based Riftbreakers virtual tabletop.
 
-## v9.10.22 performance fixes
-- Ecosystem render loop capped at ~20 FPS and sleeps when off-screen/hidden.
-- Tamagotchi renders ~8 FPS idle / ~30 FPS during animations and sleeps when off-screen/hidden.
-- System monitor background polling reduced to 5s (15s when tab hidden).
-- Window-state persistence reduced from every 1s to every 5s plus beforeunload save.
-- Default crystal blur reduced from 18px to 7px.
-- Menu → Performance mode persistently disables backdrop blur while preserving transparency; it defaults ON in this performance build and can be turned OFF.
+It runs as a same-origin HTML application and maintains its own browser-based session/campaign state.
 
+Launch it using:
 
-## v9.10.23 Window appearance editor
-- Menu → Window appearance or terminal `appearance`.
-- Live persistent controls for WinBox tint, body/header/control/terminal opacity, blur, saturation, border strength, corner radius, and shadow.
-- Presets: Crystal, Smoke, Ice, Violet, Amber, Phosphor, Flat.
-- Performance mode can be toggled from the same panel and overrides backdrop blur while preserving transparency.
+```text
+riftbreakers
+```
 
-## v9.10.24 — Categorized top menu
-The main Browser-OS menu is now grouped into compact nested categories: Apps, System, Web & information, Productivity, AI & research, Personalize, and Windows. Desktop hover/focus opens fly-out submenus; narrow/mobile layouts use expandable inline groups. Existing actions and shortcuts are unchanged.
+or:
 
+```text
+vtt
+```
 
-## v9.10.25 — Top-right Right Dock button
-A compact button is now pinned to the far-right edge of the top bar. It toggles the Right Dock directly and reflects the dock's visible/hidden state.
+---
 
+# Tiny Ecosystem
 
-## v9.10.26 — Timers & Reminders
-Timers are now merged with persistent future reminders. Countdown timers accept s/m/h/d durations; reminders accept a local date/time. A Browser-OS-wide alarm service checks them even when the Timers & Reminders window is closed, marks triggered items, shows an in-app toast/desktop notification, and plays an audible multi-tone alert when browser audio is available.
+Tiny Ecosystem is a lightweight simulation featuring:
 
+- grass
+- herbivores
+- predators
+- energy
+- aging
+- reproduction
+- hunting
+- starvation
+- population history
 
-## v9.10.27 — Agent mode + URL/project tools
-- Terminal `os` now toggles an OS Agent mode. While enabled, normal terminal lines are sent to the Browser-OS agent; `/exit` or `os off` returns to the shell. A small recent-turn buffer enables follow-up conversation without restoring the old large persistent OS context.
-- The OS agent can read explicit public URLs with `browser_read_url`; GitHub repository roots preferentially resolve to their raw README. Public web research remains available for source discovery.
-- Explicit install/integration/project-edit requests expose project-scoped developer tools: list/read files, exact replace, create/overwrite with automatic backups, syntax check, and restricted npm install/uninstall. These tools cannot address files outside the Browser-OS project.
-- Timer/reminder alarms now repeat every ~2.2 seconds until the visible Dismiss alarm button is pressed; desktop notifications request interaction when supported.
+The simulation automatically reduces activity when hidden to reduce resource usage.
 
+---
 
-## Local voice commands (faster-whisper)
+# Tamagotchi
 
-The terminal microphone button records a short clip in the browser and transcribes it locally with Faster-Whisper. The default model folder is `models\faster-whisper-small.en`. Override it with the `BROWSER_OS_WHISPER_MODEL` environment variable. The Python environment used by Browser-OS must have `faster-whisper` installed (`python -m pip install faster-whisper`). Click the microphone dot once to record and again to stop; the transcription is inserted into the command line for review before pressing Enter.
-## Persistent Outlook session
+Aether-Web includes a persistent pixel-pet system.
 
-BrowserOS stores the Playwright Outlook profile outside the application folder at `%LOCALAPPDATA%\BrowserOS\outlook_profile`. This lets Outlook authentication survive BrowserOS refreshes, restarts, patches, and replacement of the project folder. On first calendar use, an older project-local `private\tiny-web-agent\outlook_profile` is copied into the persistent location if the new profile is empty. The legacy profile is preserved.
+Current features include:
 
+- multiple pets
+- multiple species
+- food
+- mood
+- energy
+- cleanliness
+- health
+- sleeping
+- feeding
+- medicine
+- cleaning
+- playing
+- persistent aging
+- offline elapsed-time simulation
+- species-specific play animations
 
-## Calendar sync-state fix
+Pet state is stored locally in the browser.
 
-- Outlook connection state is now separate from refresh/sync state.
-- A successful sync shows Connected instead of reverting the button to Sign in.
-- Cached events render immediately when available; automatic full refreshes are less aggressive.
-- The interactive login helper returns to the Outlook calendar after Microsoft authentication if login lands on a generic Microsoft page.
+---
 
+# Appearance
 
-## Scheduled Tasks
-BrowserOS includes structured Scheduled Tasks for one-time or recurring reminders, application launches, calendar checks, and optional AI-assisted tasks. See `SCHEDULED_TASKS_GUIDE.md`.
+Aether-Web provides configurable window appearance.
 
+Settings include:
 
-## Tool Editor
+- window tint
+- body opacity
+- header opacity
+- control opacity
+- terminal opacity
+- backdrop blur
+- saturation
+- border strength
+- corner radius
+- shadow
 
-BrowserOS includes a dedicated **Tool Editor** for user-created Python tools. The editor builds the YAML tool definition from structured fields, validates the Python function and JSON Schema together, writes the implementation under `private/tiny-web-agent/tools/external/`, writes the canonical definition under `private/tiny-web-agent/tools/external/definitions/<name>.yaml`, and hot-reloads the live tool registry only after validation succeeds. External tools become available to Skills, Scheduled Tasks, and Tiny Web Agent without restarting BrowserOS. Open it from the menu, command palette, desktop-icon manager, or the terminal command `tooleditor`.
+Included presets currently include:
+
+```text
+Crystal
+Smoke
+Ice
+Violet
+Amber
+Phosphor
+Flat
+```
+
+A performance mode can disable expensive blur effects while retaining transparency.
+
+Open the editor using:
+
+```text
+appearance
+```
+
+---
+
+# Backgrounds
+
+Background options include:
+
+- flat colors
+- gradients
+- custom gradients
+- local images
+- image URLs
+
+Local image wallpapers are stored in IndexedDB rather than localStorage.
+
+Open background settings using:
+
+```text
+background
+```
+
+---
+
+# Right Dock
+
+Aether-Web includes an optional right-side workspace dock.
+
+Compatible applications can run inside the dock instead of normal floating windows.
+
+The dock supports:
+
+- adjustable width
+- vertically resizable panels
+- persistent layout
+- panel pinning
+- detaching panels into windows
+- restoring windows into the dock
+
+On smaller displays, the dock changes into an overlay drawer.
+
+---
+
+# Requirements
+
+Aether-Web is currently developed primarily for **Windows**.
+
+You will generally need:
+
+### Required
+
+- Windows 10 or Windows 11
+- Node.js
+- npm
+- Python
+- a modern Chromium-based browser
+
+### For local AI
+
+- `llama-cpp-python`
+- a compatible GGUF model
+- Python packages listed in:
+
+```text
+private/tiny-web-agent/requirements_web.txt
+```
+
+### Optional
+
+- NVIDIA GPU for CUDA-accelerated inference
+- Faster-Whisper for voice input
+- Outlook published ICS URL for calendar integration
+
+Aether-Web does not include GGUF or Whisper model files.
+
+---
+
+# Installation
+
+Clone the repository:
+
+```powershell
+git clone <YOUR-REPOSITORY-URL>
+cd aether-web
+```
+
+Install Node dependencies:
+
+```powershell
+npm install
+```
+
+Install the Python agent dependencies:
+
+```powershell
+setup-agent.bat
+```
+
+Alternatively, install the Python requirements manually:
+
+```powershell
+python -m pip install -r private\tiny-web-agent\requirements_web.txt
+```
+
+Start Aether-Web:
+
+```powershell
+npm start
+```
+
+or:
+
+```powershell
+start-browser-os.bat
+```
+
+Then open:
+
+```text
+http://127.0.0.1:8001
+```
+
+---
+
+# Selecting the Python executable
+
+Aether-Web attempts to locate Python automatically.
+
+The agent checks, in order:
+
+1. `TINY_AGENT_PYTHON`
+2. `PYTHON`
+3. `python`
+4. `py` on Windows
+
+If your AI dependencies are installed in a specific Python environment, specify it before starting Aether-Web:
+
+```powershell
+$env:TINY_AGENT_PYTHON = "C:\Path\To\python.exe"
+npm start
+```
+
+This is particularly useful when your CUDA-enabled `llama-cpp-python` installation belongs to a specific Python environment.
+
+---
+
+# Local networking
+
+Aether-Web is intentionally local-first.
+
+By default:
+
+```text
+Aether-Web:
+127.0.0.1:8001
+
+Tiny Web Agent:
+127.0.0.1:7860
+```
+
+The project is not intended to expose the local agent directly to the network by default.
+
+If you modify the binding configuration, understand the security implications before exposing AI tools or system controls to other devices.
+
+---
+
+# Privacy and local data
+
+Most Aether-Web state is stored locally.
+
+Depending on the feature, this may include:
+
+- browser localStorage
+- IndexedDB
+- SQLite databases
+- `%LOCALAPPDATA%`
+- project-local configuration files
+
+The Node.js server blocks the `/private` directory from normal static HTTP serving.
+
+The following types of files should never be committed:
+
+- conversation databases
+- SQLite WAL / SHM files
+- authentication tokens
+- Outlook ICS URLs
+- browser profiles
+- API keys
+- secrets
+- local model files
+- `.env` files
+- Python caches
+- logs
+- generated runtime state
+
+Review `.gitignore` before publishing changes.
+
+---
+
+# Project structure
+
+A simplified overview:
+
+```text
+aether-web/
+│
+├── apps/
+│   ├── collab-harness/
+│   ├── geomancy/
+│   └── riftbreakers-vtt.html
+│
+├── browser-extension/
+│   └── outlook-companion/
+│
+├── config/
+│   ├── apps.json
+│   ├── outlook.json
+│   ├── services.json
+│   └── terminal-shortcuts.json
+│
+├── css/
+│
+├── images/
+│
+├── js/
+│   ├── dashboard/
+│   ├── storage/
+│   ├── terminal/
+│   └── window-manager/
+│
+├── private/
+│   ├── calendar/
+│   ├── cron/
+│   ├── tiny-web-agent/
+│   │   ├── os_tools/
+│   │   ├── skills/
+│   │   ├── static/
+│   │   ├── templates/
+│   │   └── tools/
+│   └── voice/
+│
+├── scripts/
+│
+├── vendor/
+│
+├── index.html
+├── server.js
+├── package.json
+├── start-browser-os.bat
+└── setup-agent.bat
+```
+
+---
+
+# Adding an application
+
+Application-specific code should preferably remain isolated.
+
+For example:
+
+```text
+apps/myapp/
+    index.html
+    myapp.css
+    myapp.js
+```
+
+The Aether-Web window wrapper can then live under:
+
+```text
+js/dashboard/myapp.js
+```
+
+If the application uses AI, prefer giving it a dedicated Skill:
+
+```text
+private/tiny-web-agent/skills/myapp.md
+```
+
+If it needs programmatic data access, create a narrow external tool:
+
+```text
+private/tiny-web-agent/tools/external/my_tool.py
+```
+
+with its definition:
+
+```text
+private/tiny-web-agent/tools/external/definitions/my_tool.yaml
+```
+
+Keeping application logic isolated minimizes changes to the desktop core.
+
+---
+
+# Security model
+
+Aether-Web has access to local system functionality, so the backend deliberately restricts several operations.
+
+Examples include:
+
+- native apps are launched through approved/discovered Windows application mechanisms
+- project-editing tools are restricted to the Aether-Web project
+- generated OS workflows can compose existing tools but cannot inject arbitrary Python or shell handlers
+- the private backend directory is not exposed through normal static serving
+- localhost is used by default
+- model files and credentials are not bundled
+
+This is still experimental software.
+
+Review the source and configuration before giving the AI access to tools that can modify files or operate applications.
+
+---
+
+# Performance
+
+Aether-Web contains several measures intended to reduce background load:
+
+- slower system-monitor polling while hidden
+- throttled Tamagotchi rendering
+- throttled Ecosystem rendering
+- reduced window-state persistence frequency
+- optional blur disabling
+- performance mode
+- lazy AI service startup
+
+Local model inference will still depend heavily on:
+
+- model size
+- GGUF quantization
+- context size
+- available RAM
+- VRAM
+- number of GPU-offloaded layers
+
+---
+
+# Compatibility
+
+Aether-Web is currently **Windows-first**.
+
+It contains Windows-specific functionality such as:
+
+- PowerShell integration
+- `Get-StartApps`
+- `explorer.exe`
+- `.bat` launchers
+- Windows application discovery
+- `%LOCALAPPDATA%`
+
+Parts of the frontend may work on other operating systems, but full compatibility is not currently guaranteed.
+
+---
+
+# Known limitations
+
+- This is experimental software.
+- It has primarily been tested on a limited number of Windows machines.
+- No automated cross-platform compatibility guarantee exists.
+- Local LLM setup may require manual configuration.
+- CUDA support depends on the user's Python and `llama-cpp-python` installation.
+- Outlook ICS feeds are read-only.
+- Some older internal code still uses the historical `BrowserOS` / `Browser-OS` name.
+- Legacy integrations remain in the project for compatibility and may eventually be removed or refactored.
+- Some applications rely on browser storage and are therefore tied to the browser profile used to run Aether-Web.
+
+---
+
+# Internal naming
+
+The project was originally developed under the name **BrowserOS / Browser-OS**.
+
+The public project name is now:
+
+# **Aether-Web**
+
+Some internal filenames, environment variables, storage keys, Python modules, CSS classes, and configuration paths still use the previous name.
+
+These names are being left in place where changing them would provide little benefit or risk breaking compatibility.
+
+They may be gradually refactored in future releases.
+
+---
+
+# Development status
+
+Aether-Web is a personal experimental project that grew organically through frequent iteration.
+
+It is being published because the architecture and feature set may be useful or interesting to others, not because it is considered production-ready software.
+
+Bug reports, testing on different hardware, compatibility findings, and focused improvements are welcome.
+
+---
+
+# Contributing
+
+If you want to contribute:
+
+1. Fork the repository.
+2. Create a branch for your change.
+3. Keep changes focused.
+4. Avoid committing generated runtime state or credentials.
+5. Test the affected feature locally.
+6. Submit a pull request describing what changed and how it was tested.
+
+For major architectural changes, opening an issue first is recommended.
+
+---
+
+# Disclaimer
+
+Aether-Web can interact with local files, applications, browser data, AI models, and operating-system features.
+
+Use it at your own risk.
+
+Review any tool definitions and configuration before enabling them, particularly tools that can modify files, execute processes, send messages, or interact with external services.
+
+Aether-Web is not a security boundary or sandbox for untrusted models or untrusted tool definitions.
+
+---
+
+## Aether-Web
+
+**A local browser desktop for AI, tools, automation, and experimentation.**
